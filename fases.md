@@ -1,0 +1,145 @@
+# Fases del Proyecto - App de Prescripciones
+
+## Fase 1: Setup Base ✅
+
+### Infraestructura
+- **Tipo**: Servicios locales + Neon (cloud PostgreSQL)
+- **Estructura**: packages/backend/ + packages/frontend/ (workspaces)
+
+### Paquetes instalados
+- **Backend**: NestJS + Prisma + class-validator + bcrypt + JWT + Passport + PDFKit + QRCode
+- **Frontend**: Next.js + TailwindCSS
+
+### Schema de Base de Datos
+```prisma
+enum Role { admin, doctor, patient }
+enum PrescriptionStatus { pending, consumed }
+
+model User
+model Doctor
+model Patient
+model Prescription
+model PrescriptionItem
+```
+
+### Variables de entorno
+- `packages/backend/.env` - DATABASE_URL, JWT secrets, APP_PORT
+- `packages/frontend/.env.local` - NEXT_PUBLIC_API_URL
+
+### Migración
+- `prisma migrate dev` aplicado
+
+---
+
+## Fase 2: Seed de Prueba ✅
+
+### Usuarios creados
+| Email | Rol | Contraseña |
+|-------|-----|------------|
+| admin@test.com | admin | password123 |
+| dr@test.com | doctor | password123 |
+| patient@test.com | patient | password123 |
+
+### Datos de ejemplo
+- 1 doctor: Dr. Juan Pérez (especialidad: Medicina General)
+- 1 paciente: Carlos López (birthDate: 1990-05-15)
+- 5 prescripciones:
+  - RX-001: pending (Amoxicilina + Paracetamol)
+  - RX-002: consumed (Ibuprofeno)
+  - RX-003: pending (Vitamina C + Omeprazol)
+  - RX-004: consumed (Dipirona)
+  - RX-005: pending (Loratadina)
+
+---
+
+## Fase 3: Core Auth (Pendiente)
+
+### Objetivos
+- [ ] Módulo de autenticación JWT + Refresh Tokens
+- [ ] Estrategia de login/logout
+- [ ] Guards de RBAC (@Roles decorator)
+- [ ] Endpoints: /auth/login, /auth/register, /auth/refresh, /auth/profile
+- [ ] DTOs con class-validator
+- [ ] Filtro de excepciones global
+- [ ] Configuración: Helmet, CORS, rate limit
+
+### Archivos a crear
+```
+src/auth/
+├── auth.module.ts
+├── auth.controller.ts
+├── auth.service.ts
+├── dto/
+│   ├── login.dto.ts
+│   └── register.dto.ts
+├── strategies/
+│   ├── jwt.strategy.ts
+│   └── refresh.strategy.ts
+├── guards/
+│   └── roles.guard.ts
+└── decorators/
+    └── roles.decorator.ts
+```
+
+---
+
+## Fase 4: Módulos de Negocio (Pendiente)
+
+### Users Module
+- GET /users (listado con filtros)
+- POST /users (crear usuario - opcional)
+- GET /patients, GET /doctors
+
+### Prescriptions Module
+- POST /prescriptions (crear prescripción con ítems)
+- GET /prescriptions (listado con paginación/filtros)
+- GET /prescriptions/:id
+- PUT /prescriptions/:id/consume (marcar consumida)
+- GET /prescriptions/:id/pdf (descargar PDF)
+
+### Admin Module
+- GET /admin/metrics (totales, por estado, por día, top doctors)
+
+---
+
+## Fase 5: Frontend (Pendiente)
+
+### Páginas
+- `/login` - Autenticación
+- `/doctor/prescriptions` - Listado prescripciones
+- `/doctor/prescriptions/new` - Crear prescripción
+- `/doctor/prescriptions/[id]` - Detalle
+- `/patient/prescriptions` - Listado paciente
+- `/patient/prescriptions/[id]` - Detalle
+- `/admin` - Dashboard con métricas
+
+### Features
+- Protección de rutas por rol
+- Toasts para feedback
+- Estados: loading, error, empty
+- Responsive design
+
+---
+
+## Fase 6: Testing y Polish (Pendiente)
+
+### Backend
+- Tests unitarios de servicios
+- Tests e2e básicos
+
+### Frontend
+- Test de componente crítico
+
+### Documentación
+- README con setup
+- Swagger (plus)
+
+---
+
+## Plus (Opcionales)
+- [ ] PDF con QR y firma del médico
+- [ ] Auditoría de cambios de estado
+- [ ] Notificaciones por email
+- [ ] Búsqueda avanzada
+- [ ] Dark/Light theme
+- [ ] SSE/WebSocket para métricas en vivo
