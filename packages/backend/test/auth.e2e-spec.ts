@@ -28,13 +28,15 @@ describe('AuthController (e2e)', () => {
   });
 
   describe('/auth/login (POST)', () => {
+    const getMessage = (res: any) => Array.isArray(res.body.message) ? res.body.message[0] : res.body.message;
+
     it('should return 401 with invalid credentials', async () => {
       const response = await request(app.getHttpServer())
         .post('/auth/login')
         .send({ email: 'invalid@example.com', password: 'wrongpassword' })
         .expect(401);
 
-      expect(response.body.message).toBe('Credenciales inválidas');
+      expect(getMessage(response)).toBe('Credenciales inválidas');
     });
 
     it('should return 400 with missing email', async () => {
@@ -43,7 +45,7 @@ describe('AuthController (e2e)', () => {
         .send({ password: 'password123' })
         .expect(400);
 
-      expect(response.body.message).toContain('email');
+      expect(getMessage(response)).toContain('email');
     });
 
     it('should return 400 with invalid email format', async () => {
@@ -52,7 +54,7 @@ describe('AuthController (e2e)', () => {
         .send({ email: 'not-an-email', password: 'password123' })
         .expect(400);
 
-      expect(response.body.message).toContain('email');
+      expect(getMessage(response)).toContain('email');
     });
 
     it('should return 400 with short password', async () => {
@@ -61,11 +63,13 @@ describe('AuthController (e2e)', () => {
         .send({ email: 'test@example.com', password: '123' })
         .expect(400);
 
-      expect(response.body.message).toContain('password');
+      expect(getMessage(response)).toContain('password');
     });
   });
 
   describe('/auth/register (POST)', () => {
+    const getMessage = (res: any) => Array.isArray(res.body.message) ? res.body.message[0] : res.body.message;
+
     it('should return 400 with invalid role', async () => {
       const response = await request(app.getHttpServer())
         .post('/auth/register')
@@ -77,7 +81,7 @@ describe('AuthController (e2e)', () => {
         })
         .expect(400);
 
-      expect(response.body.message).toContain('role');
+      expect(getMessage(response)).toContain('role');
     });
 
     it('should return 400 with missing required fields', async () => {
@@ -85,6 +89,8 @@ describe('AuthController (e2e)', () => {
         .post('/auth/register')
         .send({ email: 'new@example.com' })
         .expect(400);
+
+      expect(getMessage(response)).toContain('password');
     });
   });
 

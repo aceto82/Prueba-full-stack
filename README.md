@@ -51,9 +51,10 @@ npm run dev              # Frontend :3000
 npm run dev --workspace=packages/backend   # Backend :3001
 
 # Tests
-npm run test --workspace=packages/backend
-npm run test:e2e --workspace=packages/backend
-npm run test --workspace=packages/frontend
+npm run test --workspace=packages/backend          # Unit tests
+npm run test:e2e --workspace=packages/backend    # E2E tests
+npm run test:cov --workspace=packages/backend     # Tests con coverage
+npm run test --workspace=packages/frontend       # Frontend tests
 
 # Build
 npm run build
