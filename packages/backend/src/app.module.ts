@@ -3,6 +3,9 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { PrescriptionsModule } from './prescriptions/prescriptions.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -14,6 +17,9 @@ import { AuthModule } from './auth/auth.module';
       },
     ]),
     AuthModule,
+    UsersModule,
+    PrescriptionsModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

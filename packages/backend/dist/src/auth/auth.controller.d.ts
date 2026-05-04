@@ -36,8 +36,8 @@ export declare class AuthController {
         createdAt: Date;
         doctor: {
             id: string;
-            userId: string;
             specialty: string | null;
+            userId: string;
         } | null;
         patient: {
             id: string;
