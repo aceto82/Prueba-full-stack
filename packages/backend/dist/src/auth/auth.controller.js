@@ -16,6 +16,7 @@ exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const throttler_1 = require("@nestjs/throttler");
 const auth_service_1 = require("./auth.service");
+const current_user_decorator_1 = require("./decorators/current-user.decorator");
 const public_decorator_1 = require("./decorators/public.decorator");
 const login_dto_1 = require("./dto/login.dto");
 const refresh_dto_1 = require("./dto/refresh.dto");
@@ -36,11 +37,11 @@ let AuthController = class AuthController {
     refresh(req, dto) {
         return this.authService.refreshTokens(req.user.sub, dto.refreshToken);
     }
-    profile(req) {
-        return req.user;
+    profile(user) {
+        return user;
     }
-    logout(req) {
-        return this.authService.logout(req.user.sub);
+    logout(user) {
+        return this.authService.logout(user.sub);
     }
 };
 exports.AuthController = AuthController;
@@ -76,14 +77,14 @@ __decorate([
 ], AuthController.prototype, "refresh", null);
 __decorate([
     (0, common_1.Get)('profile'),
-    __param(0, (0, common_1.Request)()),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "profile", null);
 __decorate([
     (0, common_1.Post)('logout'),
-    __param(0, (0, common_1.Request)()),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)

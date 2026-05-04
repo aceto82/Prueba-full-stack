@@ -3,14 +3,15 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RefreshDto } from './dto/refresh.dto';
 import { RegisterDto } from './dto/register.dto';
+type JwtUser = {
+    sub: string;
+    email: string;
+    role: string;
+    id?: string;
+    name?: string;
+};
 type AuthRequest = ExpressRequest & {
-    user: {
-        sub: string;
-        email: string;
-        role: string;
-        id?: string;
-        name?: string;
-    };
+    user: JwtUser;
 };
 export declare class AuthController {
     private readonly authService;
@@ -39,13 +40,7 @@ export declare class AuthController {
         accessToken: string;
         refreshToken: string;
     }>;
-    profile(req: AuthRequest): Express.User & {
-        sub: string;
-        email: string;
-        role: string;
-        id?: string;
-        name?: string;
-    };
-    logout(req: AuthRequest): Promise<void>;
+    profile(user: JwtUser): JwtUser;
+    logout(user: JwtUser): Promise<void>;
 }
 export {};

@@ -29,6 +29,56 @@ let UsersService = class UsersService {
             data: { refreshTokenHash: hash },
         });
     }
+    async findAll({ role, query, page = 1, limit = 10, order = 'desc' }) {
+        const where = {};
+        if (role)
+            where.role = role;
+        if (query) {
+            where.OR = [
+                { name: { contains: query, mode: 'insensitive' } },
+                { email: { contains: query, mode: 'insensitive' } },
+            ];
+        }
+        const [data, total] = await Promise.all([
+            this.prisma.user.findMany({
+                where,
+                skip: (page - 1) * limit,
+                take: limit,
+                orderBy: { createdAt: order },
+                select: { id: true, email: true, name: true, role: true, createdAt: true },
+            }),
+            this.prisma.user.count({ where }),
+        ]);
+        return { data, total, page, limit };
+    }
+    async findAllPatients(page = 1, limit = 10, order = 'desc') {
+        const [data, total] = await Promise.all([
+            this.prisma.patient.findMany({
+                skip: (page - 1) * limit,
+                take: limit,
+                orderBy: { user: { createdAt: order } },
+                include: {
+                    user: { select: { id: true, name: true, email: true, createdAt: true } },
+                },
+            }),
+            this.prisma.patient.count(),
+        ]);
+        return { data, total, page, limit };
+    }
+    async findAllDoctors(page = 1, limit = 10, order = 'desc') {
+        const [data, total] = await Promise.all([
+            this.prisma.doctor.findMany({
+                skip: (page - 1) * limit,
+                take: limit,
+                orderBy: { user: { createdAt: order } },
+                include: {
+                    user: { select: { id: true, name: true, email: true, createdAt: true } },
+                },
+            }),
+            this.prisma.doctor.count(),
+        ]);
+        return { data, total, page, limit };
+    }
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([
