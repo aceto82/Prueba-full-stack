@@ -32,10 +32,17 @@ export default function DoctorPrescriptionsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [status, setStatus] = useState('');
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
 
   const fetchPrescriptions = async () => {
     try {
-      const response = await getPrescriptions({ mine: true, status: status || undefined }) as PrescriptionsResponse;
+      const response = await getPrescriptions({
+        mine: true,
+        status: status || undefined,
+        from: from || undefined,
+        to: to || undefined,
+      }) as PrescriptionsResponse;
       setPrescriptions(response.data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error cargando');
@@ -46,7 +53,7 @@ export default function DoctorPrescriptionsPage() {
 
   useEffect(() => {
     fetchPrescriptions();
-  }, [status]);
+  }, [status, from, to]);
 
   const handleLogout = () => {
     logout();
@@ -88,7 +95,7 @@ export default function DoctorPrescriptionsPage() {
           </Link>
         </div>
 
-        <div className="mb-4">
+        <div className="mb-4 flex gap-4 flex-wrap">
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
@@ -98,6 +105,22 @@ export default function DoctorPrescriptionsPage() {
             <option value="pending">Pendientes</option>
             <option value="consumed">Consumidas</option>
           </select>
+
+          <input
+            type="date"
+            value={from}
+            onChange={(e) => setFrom(e.target.value)}
+            className="border border-gray-300 rounded px-3 py-2"
+            placeholder="Desde"
+          />
+
+          <input
+            type="date"
+            value={to}
+            onChange={(e) => setTo(e.target.value)}
+            className="border border-gray-300 rounded px-3 py-2"
+            placeholder="Hasta"
+          />
         </div>
 
         {error && (
