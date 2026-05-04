@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common'
 import { Throttle } from '@nestjs/throttler';
 import { Request as ExpressRequest } from 'express';
 import { AuthService } from './auth.service';
+import { CurrentUser } from './decorators/current-user.decorator';
 import { Public } from './decorators/public.decorator';
 import { LoginDto } from './dto/login.dto';
 import { RefreshDto } from './dto/refresh.dto';
@@ -9,7 +10,8 @@ import { RegisterDto } from './dto/register.dto';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
-type AuthRequest = ExpressRequest & { user: { sub: string; email: string; role: string; id?: string; name?: string } };
+type JwtUser = { sub: string; email: string; role: string; id?: string; name?: string };
+type AuthRequest = ExpressRequest & { user: JwtUser };
 
 @Controller('auth')
 export class AuthController {
@@ -38,12 +40,12 @@ export class AuthController {
   }
 
   @Get('profile')
-  profile(@Request() req: AuthRequest) {
-    return req.user;
+  profile(@CurrentUser() user: JwtUser) {
+    return user;
   }
 
   @Post('logout')
-  logout(@Request() req: AuthRequest) {
-    return this.authService.logout(req.user.sub);
+  logout(@CurrentUser() user: JwtUser) {
+    return this.authService.logout(user.sub);
   }
 }
