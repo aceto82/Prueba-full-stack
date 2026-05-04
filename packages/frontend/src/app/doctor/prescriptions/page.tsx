@@ -1,7 +1,5 @@
 'use client';
 
-'use client';
-
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -69,15 +67,16 @@ export default function DoctorPrescriptionsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--color-bg-alt)' }}>
+      <header className="bg-card shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-semibold text-gray-800">
+          <h1 className="text-xl font-semibold" style={{ color: 'var(--color-text)' }}>
             Dr. {user?.name}
           </h1>
           <button
             onClick={handleLogout}
-            className="text-sm text-gray-600 hover:text-gray-900"
+            className="text-sm"
+            style={{ color: 'var(--color-text-muted)' }}
           >
             Cerrar sesión
           </button>
@@ -86,7 +85,7 @@ export default function DoctorPrescriptionsPage() {
 
       <main className="max-w-7xl mx-auto px-4 py-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Mis Prescripciones</h2>
+          <h2 className="text-2xl font-bold" style={{ color: 'var(--color-text)' }}>Mis Prescripciones</h2>
           <Link
             href="/doctor/prescriptions/new"
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
@@ -99,7 +98,8 @@ export default function DoctorPrescriptionsPage() {
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2"
+            className="border rounded px-3 py-2"
+            style={{ backgroundColor: 'var(--color-bg-input)', borderColor: 'var(--color-border)', color: 'var(--color-text)' }}
           >
             <option value="">Todos los estados</option>
             <option value="pending">Pendientes</option>
@@ -110,7 +110,8 @@ export default function DoctorPrescriptionsPage() {
             type="date"
             value={from}
             onChange={(e) => setFrom(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2"
+            className="border rounded px-3 py-2"
+            style={{ backgroundColor: 'var(--color-bg-input)', borderColor: 'var(--color-border)', color: 'var(--color-text)' }}
             placeholder="Desde"
           />
 
@@ -118,7 +119,8 @@ export default function DoctorPrescriptionsPage() {
             type="date"
             value={to}
             onChange={(e) => setTo(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2"
+            className="border rounded px-3 py-2"
+            style={{ backgroundColor: 'var(--color-bg-input)', borderColor: 'var(--color-border)', color: 'var(--color-text)' }}
             placeholder="Hasta"
           />
         </div>
@@ -128,52 +130,37 @@ export default function DoctorPrescriptionsPage() {
         )}
 
         {prescriptions.length === 0 ? (
-          <div className="text-center text-gray-500 py-12">
+          <div className="text-center py-12" style={{ color: 'var(--color-text-muted)' }}>
             No hay prescripciones
           </div>
         ) : (
-          <div className="bg-white shadow rounded-lg overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+          <div className="bg-card shadow rounded-lg overflow-hidden">
+            <table className="min-w-full divide-y" style={{ borderColor: 'var(--color-border)' }}>
+              <thead style={{ backgroundColor: 'var(--color-bg-alt)' }}>
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    Código
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    Paciente
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    Estado
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    Fecha
-                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{ color: 'var(--color-text-muted)' }}>Código</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{ color: 'var(--color-text-muted)' }}>Paciente</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{ color: 'var(--color-text-muted)' }}>Estado</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase" style={{ color: 'var(--color-text-muted)' }}>Fecha</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="divide-y" style={{ borderColor: 'var(--color-border)' }}>
                 {prescriptions.map((rx) => (
-                  <tr key={rx.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <Link
-                        href={`/doctor/prescriptions/${rx.id}`}
-                        className="text-blue-600 hover:underline"
-                      >
+                  <tr key={rx.id}>
+                    <td className="px-6 py-4 whitespace-nowrap" style={{ color: 'var(--color-text)' }}>
+                      <Link href={`/doctor/prescriptions/${rx.id}`} className="text-link hover:underline">
                         {rx.code}
                       </Link>
                     </td>
-                    <td className="px-6 py-4">{rx.patient.user.name}</td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`px-2 py-1 rounded text-xs ${
-                          rx.status === 'pending'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-green-100 text-green-800'
-                        }`}
-                      >
+                    <td className="px-6 py-4 whitespace-nowrap" style={{ color: 'var(--color-text)' }}>
+                      {rx.patient.user.name}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-1 rounded text-xs ${rx.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
                         {rx.status === 'pending' ? 'Pendiente' : 'Consumida'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap" style={{ color: 'var(--color-text-muted)' }}>
                       {new Date(rx.createdAt).toLocaleDateString('es-ES')}
                     </td>
                   </tr>

@@ -1,14 +1,21 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { getMetrics, Metrics } from '@/lib/api';
-import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { getMetrics } from '@/lib/api';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
 
-const COLORS = ['#10B981', '#F59E0B'];
+const COLORS = ['#10b981', '#f59e0b'];
 
-export default function AdminDashboardPage() {
+interface Metrics {
+  totals: { doctors: number; patients: number; prescriptions: number };
+  byStatus: { pending: number; consumed: number };
+  byDay: { date: string; count: number }[];
+  topDoctors: { doctorId: string; name: string; count: number }[];
+}
+
+export default function AdminDashboard() {
   const { user, logout } = useAuth();
   const router = useRouter();
   const [metrics, setMetrics] = useState<Metrics | null>(null);
@@ -17,7 +24,7 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     getMetrics()
-      .then(setMetrics)
+      .then((data: any) => setMetrics(data))
       .catch((err) => setError(err instanceof Error ? err.message : 'Error'))
       .finally(() => setLoading(false));
   }, []);
@@ -35,23 +42,22 @@ export default function AdminDashboardPage() {
     );
   }
 
-  const statusData = metrics
-    ? [
-        { name: 'Consumidas', value: metrics.byStatus.consumed },
-        { name: 'Pendientes', value: metrics.byStatus.pending },
-      ]
-    : [];
+  const statusData = [
+    { name: 'Pendientes', value: metrics?.byStatus?.pending || 0 },
+    { name: 'Consumidas', value: metrics?.byStatus?.consumed || 0 },
+  ];
 
   const byDayData = metrics?.byDay?.length ? metrics.byDay : [];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--color-bg-alt)' }}>
+      <header className="bg-card shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-semibold text-gray-800">Admin</h1>
+          <h1 className="text-xl font-semibold" style={{ color: 'var(--color-text)' }}>Admin</h1>
           <button
             onClick={handleLogout}
-            className="text-sm text-gray-600 hover:text-gray-900"
+            className="text-sm"
+            style={{ color: 'var(--color-text-muted)' }}
           >
             Cerrar sesión
           </button>
@@ -59,32 +65,32 @@ export default function AdminDashboardPage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-6">
-        <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
+        <h2 className="text-2xl font-bold mb-6" style={{ color: 'var(--color-text)' }}>Dashboard</h2>
 
         {error && (
-          <div className="bg-red-50 text-red-600 p-3 rounded mb-4">{error}</div>
+          <div className="p-3 rounded mb-4" style={{ backgroundColor: 'var(--color-bg-alt)', color: 'var(--color-text)' }}>{error}</div>
         )}
 
         <div className="grid gap-6 md:grid-cols-3 mb-6">
-          <div className="bg-white shadow rounded-lg p-6">
-            <p className="text-sm text-gray-500">Doctores</p>
-            <p className="text-3xl font-bold">{metrics?.totals.doctors || 0}</p>
+          <div className="bg-card shadow rounded-lg p-6">
+            <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Doctores</p>
+            <p className="text-3xl font-bold" style={{ color: 'var(--color-text)' }}>{metrics?.totals.doctors || 0}</p>
           </div>
-          <div className="bg-white shadow rounded-lg p-6">
-            <p className="text-sm text-gray-500">Pacientes</p>
-            <p className="text-3xl font-bold">{metrics?.totals.patients || 0}</p>
+          <div className="bg-card shadow rounded-lg p-6">
+            <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Pacientes</p>
+            <p className="text-3xl font-bold" style={{ color: 'var(--color-text)' }}>{metrics?.totals.patients || 0}</p>
           </div>
-          <div className="bg-white shadow rounded-lg p-6">
-            <p className="text-sm text-gray-500">Prescripciones</p>
-            <p className="text-3xl font-bold">
+          <div className="bg-card shadow rounded-lg p-6">
+            <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Prescripciones</p>
+            <p className="text-3xl font-bold" style={{ color: 'var(--color-text)' }}>
               {metrics?.totals.prescriptions || 0}
             </p>
           </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 mb-6">
-          <div className="bg-white shadow rounded-lg p-6">
-            <h3 className="font-semibold mb-4">Por Estado</h3>
+          <div className="bg-card shadow rounded-lg p-6">
+            <h3 className="font-semibold mb-4" style={{ color: 'var(--color-text)' }}>Por Estado</h3>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -105,76 +111,34 @@ export default function AdminDashboardPage() {
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            <div className="flex justify-center gap-4 mt-2">
-              {statusData.map((entry, index) => (
-                <div key={entry.name} className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: COLORS[index] }}
-                  />
-                  <span className="text-sm">
-                    {entry.name}: {entry.value}
-                  </span>
-                </div>
-              ))}
-            </div>
           </div>
-
-          <div className="bg-white shadow rounded-lg p-6">
-            <h3 className="font-semibold mb-4">Últimos 30 Días</h3>
+          <div className="bg-card shadow rounded-lg p-6">
+            <h3 className="font-semibold mb-4" style={{ color: 'var(--color-text)' }}>Últimos 30 días</h3>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={byDayData}>
-                  <XAxis
-                    dataKey="date"
-                    tick={{ fontSize: 12 }}
-                    tickFormatter={(value) =>
-                      new Date(value).toLocaleDateString('es-ES', {
-                        month: 'short',
-                        day: 'numeric',
-                      })
-                    }
-                  />
-                  <YAxis tick={{ fontSize: 12 }} />
-                  <Tooltip
-                    labelFormatter={(value) =>
-                      new Date(value).toLocaleDateString('es-ES')
-                    }
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="count"
-                    stroke="#2563EB"
-                    strokeWidth={2}
-                    dot={false}
-                  />
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" tick={{ fontSize: 12 }} style={{ color: 'var(--color-text-muted)' }} />
+                  <YAxis tick={{ fontSize: 12 }} style={{ color: 'var(--color-text-muted)' }} />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="count" stroke="#2563eb" strokeWidth={2} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
         </div>
 
-        {metrics?.topDoctors && metrics.topDoctors.length > 0 && (
-          <div className="bg-white shadow rounded-lg p-6">
-            <h3 className="font-semibold mb-4">Top Doctores</h3>
-            <table className="min-w-full">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left py-2">Doctor</th>
-                  <th className="text-right py-2">Prescripciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {metrics.topDoctors.map((doc, index) => (
-                  <tr key={index} className="border-b">
-                    <td className="py-2">{doc.name}</td>
-                    <td className="text-right">{doc.count}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <div className="bg-card shadow rounded-lg p-6">
+          <h3 className="font-semibold mb-4" style={{ color: 'var(--color-text)' }}>Top Doctores</h3>
+          <div className="space-y-2">
+            {metrics?.topDoctors?.map((doc, index) => (
+              <div key={doc.doctorId} className="flex justify-between items-center p-2 rounded" style={{ backgroundColor: 'var(--color-bg-alt)' }}>
+                <span style={{ color: 'var(--color-text)' }}>{index + 1}. {doc.name}</span>
+                <span className="font-semibold" style={{ color: 'var(--color-text)' }}>{doc.count}</span>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
       </main>
     </div>
   );

@@ -62,7 +62,7 @@ export default function PatientPrescriptionDetailPage() {
 
   if (error || !prescription) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen" style={{ backgroundColor: 'var(--color-bg-alt)' }}>
         <div className="max-w-3xl mx-auto px-4 py-6">
           <div className="bg-red-50 text-red-600 p-3 rounded">
             {error || 'Prescripción no encontrada'}
@@ -73,13 +73,13 @@ export default function PatientPrescriptionDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--color-bg-alt)' }}>
+      <header className="bg-card shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-semibold text-gray-800">{user?.name}</h1>
+          <h1 className="text-xl font-semibold text-primary">{user?.name}</h1>
           <button
             onClick={handleLogout}
-            className="text-sm text-gray-600 hover:text-gray-900"
+            className="text-sm text-secondary hover:text-primary"
           >
             Cerrar sesión
           </button>
@@ -90,17 +90,17 @@ export default function PatientPrescriptionDetailPage() {
         <div className="mb-6">
           <Link
             href="/patient/prescriptions"
-            className="text-blue-600 hover:underline"
+            className="text-link hover:underline"
           >
             ← Volver
           </Link>
         </div>
 
-        <div className="bg-white shadow rounded-lg p-6">
+        <div className="bg-card shadow rounded-lg p-6">
           <div className="flex justify-between items-start mb-6">
             <div>
               <h2 className="text-2xl font-bold">{prescription.code}</h2>
-              <p className="text-gray-500">
+              <p className="text-muted">
                 {new Date(prescription.createdAt).toLocaleDateString('es-ES', {
                   year: 'numeric',
                   month: 'long',
@@ -121,31 +121,31 @@ export default function PatientPrescriptionDetailPage() {
 
           <div className="border-t pt-4">
             <h3 className="font-semibold mb-2">Médico</h3>
-            <p className="text-gray-700">Dr. {prescription.author.user.name}</p>
+            <p className="text-primary">Dr. {prescription.author.user.name}</p>
           </div>
 
           {prescription.notes && (
             <div className="border-t pt-4 mt-4">
               <h3 className="font-semibold mb-2">Notas</h3>
-              <p className="text-gray-700">{prescription.notes}</p>
+              <p className="text-primary">{prescription.notes}</p>
             </div>
           )}
 
           <div className="border-t pt-4 mt-4">
             <h3 className="font-semibold mb-3">Medicamentos</h3>
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead style={{ backgroundColor: 'var(--color-bg-alt)' }}>
                 <tr>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">
+                  <th className="px-3 py-2 text-left text-xs font-medium text-muted">
                     Medicamento
                   </th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">
+                  <th className="px-3 py-2 text-left text-xs font-medium text-muted">
                     Dosis
                   </th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">
+                  <th className="px-3 py-2 text-left text-xs font-medium text-muted">
                     Cant.
                   </th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">
+                  <th className="px-3 py-2 text-left text-xs font-medium text-muted">
                     Indicaciones
                   </th>
                 </tr>
@@ -154,11 +154,11 @@ export default function PatientPrescriptionDetailPage() {
                 {prescription.items.map((item) => (
                   <tr key={item.id}>
                     <td className="px-3 py-2">{item.name}</td>
-                    <td className="px-3 py-2 text-gray-500">{item.dosage || '-'}</td>
-                    <td className="px-3 py-2 text-gray-500">
+                    <td className="px-3 py-2 text-muted">{item.dosage || '-'}</td>
+                    <td className="px-3 py-2 text-muted">
                       {item.quantity || '-'}
                     </td>
-                    <td className="px-3 py-2 text-gray-500">
+                    <td className="px-3 py-2 text-muted">
                       {item.instructions || '-'}
                     </td>
                   </tr>
@@ -179,7 +179,7 @@ export default function PatientPrescriptionDetailPage() {
             )}
             <button
               onClick={handleDownload}
-              className="flex-1 bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700"
+              className="flex-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
             >
               Descargar PDF
             </button>

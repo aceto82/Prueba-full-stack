@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitest/config';
 import path from 'path';
 
-const rootNodeModules = path.resolve(__dirname, '../../node_modules');
+const rootNodeModules = path.resolve(__dirname, '../node_modules');
 
 export default defineConfig({
   test: {
@@ -9,9 +9,6 @@ export default defineConfig({
     setupFiles: ['./test/setup.ts'],
     globals: true,
     css: true,
-    deps: {
-      inline: ['react', 'react-dom', 'react-dom/client', 'scheduler'],
-    },
   },
   resolve: {
     alias: {

@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { getPrescriptions, consumePrescription, downloadPDF } from '@/lib/api';
 
@@ -50,15 +50,15 @@ export default function PatientPrescriptionsPage() {
     setActionId(id);
     try {
       await consumePrescription(id);
-      await fetchPrescriptions();
+      fetchPrescriptions();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error');
+      setError(err instanceof Error ? err.message : 'Error consumiendo');
     } finally {
       setActionId(null);
     }
   };
 
-  const handleDownload = async (id: string) => {
+  const handleDownload = async (id: string, code: string) => {
     try {
       await downloadPDF(id);
     } catch (err) {
@@ -80,15 +80,16 @@ export default function PatientPrescriptionsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--color-bg-alt)' }}>
+      <header className="bg-card shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-semibold text-gray-800">
+          <h1 className="text-xl font-semibold" style={{ color: 'var(--color-text)' }}>
             {user?.name}
           </h1>
           <button
             onClick={handleLogout}
-            className="text-sm text-gray-600 hover:text-gray-900"
+            className="text-sm"
+            style={{ color: 'var(--color-text-muted)' }}
           >
             Cerrar sesión
           </button>
@@ -96,14 +97,14 @@ export default function PatientPrescriptionsPage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-6">
-        <h2 className="text-2xl font-bold mb-6">Mis Prescripciones</h2>
+        <h2 className="text-2xl font-bold mb-6" style={{ color: 'var(--color-text)' }}>Mis Prescripciones</h2>
 
         {error && (
-          <div className="bg-red-50 text-red-600 p-3 rounded mb-4">{error}</div>
+          <div className="p-3 rounded mb-4" style={{ backgroundColor: 'var(--color-bg-alt)', color: 'var(--color-text)' }}>{error}</div>
         )}
 
         {prescriptions.length === 0 ? (
-          <div className="text-center text-gray-500 py-12">
+          <div className="text-center py-12" style={{ color: 'var(--color-text-muted)' }}>
             No hay prescripciones
           </div>
         ) : (
@@ -111,50 +112,33 @@ export default function PatientPrescriptionsPage() {
             {prescriptions.map((rx) => (
               <div
                 key={rx.id}
-                className="bg-white shadow rounded-lg p-4"
+                className="bg-card shadow rounded-lg p-4"
               >
-                <div className="flex justify-between items-start mb-3">
-                  <Link
-                    href={`/patient/prescriptions/${rx.id}`}
-                    className="text-blue-600 font-semibold hover:underline"
-                  >
+                <div className="flex justify-between items-start mb-2">
+                  <Link href={`/patient/prescriptions/${rx.id}`} className="text-lg font-semibold text-link hover:underline">
                     {rx.code}
                   </Link>
-                  <span
-                    className={`px-2 py-1 rounded text-xs ${
-                      rx.status === 'pending'
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-green-100 text-green-800'
-                    }`}
-                  >
+                  <span className={`px-2 py-1 rounded text-xs ${rx.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
                     {rx.status === 'pending' ? 'Pendiente' : 'Consumida'}
                   </span>
                 </div>
-
-                <p className="text-sm text-gray-500 mb-2">
-                  Dr. {rx.author.user.name}
-                </p>
-                <p className="text-sm text-gray-500 mb-4">
-                  {new Date(rx.createdAt).toLocaleDateString('es-ES')}
-                </p>
-
-                <div className="flex gap-2">
-                  {rx.status === 'pending' && (
-                    <button
-                      onClick={() => handleConsume(rx.id)}
-                      disabled={actionId === rx.id}
-                      className="flex-1 bg-green-600 text-white py-1 px-2 rounded text-sm hover:bg-green-700 disabled:opacity-50"
-                    >
-                      {actionId === rx.id ? '...' : 'Consumir'}
-                    </button>
-                  )}
+                <p className="text-sm mb-2" style={{ color: 'var(--color-text-muted)' }}>Dr. {rx.author.user.name}</p>
+                <p className="text-sm mb-4" style={{ color: 'var(--color-text-muted)' }}>{new Date(rx.createdAt).toLocaleDateString('es-ES')}</p>
+                {rx.status === 'pending' && (
                   <button
-                    onClick={() => handleDownload(rx.id)}
-                    className="flex-1 bg-gray-600 text-white py-1 px-2 rounded text-sm hover:bg-gray-700"
+                    onClick={() => handleConsume(rx.id)}
+                    disabled={actionId === rx.id}
+                    className="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 disabled:opacity-50 transition-colors mb-2"
                   >
-                    PDF
+                    {actionId === rx.id ? 'Marcando...' : 'Marcar como consumida'}
                   </button>
-                </div>
+                )}
+                <button
+                  onClick={() => handleDownload(rx.id, rx.code)}
+                  className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
+                >
+                  Descargar PDF
+                </button>
               </div>
             ))}
           </div>

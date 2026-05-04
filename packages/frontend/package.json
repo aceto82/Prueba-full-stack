@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
-    "test:run": "vitest run"
+    "test": "vitest --config vitest.config.mts",
+    "test:ui": "vitest --ui --config vitest.config.mts",
+    "test:run": "vitest run --config vitest.config.mts"
   },
   "dependencies": {
     "next": "16.2.4",

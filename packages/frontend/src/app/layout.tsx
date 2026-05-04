@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import { SessionProvider } from "@/components/SessionProvider";
 import { ToastProvider } from "@/contexts/ToastContext";
 
@@ -30,11 +31,13 @@ export default function RootLayout({
       lang="es"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-gray-50">
+      <body className="min-h-full flex flex-col" style={{ backgroundColor: 'var(--color-bg)' }}>
         <AuthProvider>
-          <ToastProvider>
-            <SessionProvider>{children}</SessionProvider>
-          </ToastProvider>
+          <ThemeProvider>
+            <ToastProvider>
+              <SessionProvider>{children}</SessionProvider>
+            </ToastProvider>
+          </ThemeProvider>
         </AuthProvider>
       </body>
     </html>

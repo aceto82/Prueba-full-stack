@@ -106,15 +106,15 @@ export default function NewPrescriptionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--color-bg-alt)' }}>
+      <header className="bg-card shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-semibold text-gray-800">
+          <h1 className="text-xl font-semibold text-primary">
             Dr. {user?.name}
           </h1>
           <button
             onClick={handleLogout}
-            className="text-sm text-gray-600 hover:text-gray-900"
+            className="text-sm text-secondary hover:text-primary"
           >
             Cerrar sesión
           </button>
@@ -125,13 +125,13 @@ export default function NewPrescriptionPage() {
         <div className="mb-6">
           <Link
             href="/doctor/prescriptions"
-            className="text-blue-600 hover:underline"
+            className="text-link hover:underline"
           >
             ← Volver
           </Link>
         </div>
 
-        <div className="bg-white shadow rounded-lg p-6">
+        <div className="bg-card shadow rounded-lg p-6">
           <h2 className="text-2xl font-bold mb-6">Nueva Prescripción</h2>
 
           {success && (
@@ -146,7 +146,7 @@ export default function NewPrescriptionPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-primary mb-1">
                 Paciente *
               </label>
               <select
@@ -165,7 +165,7 @@ export default function NewPrescriptionPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-primary mb-1">
                 Notas
               </label>
               <textarea
@@ -178,13 +178,13 @@ export default function NewPrescriptionPage() {
 
             <div>
               <div className="flex justify-between items-center mb-2">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-primary">
                   Ítems *
                 </label>
                 <button
                   type="button"
                   onClick={addItem}
-                  className="text-sm text-blue-600 hover:underline"
+                  className="text-sm text-link hover:underline"
                 >
                   + Agregar ítem
                 </button>
