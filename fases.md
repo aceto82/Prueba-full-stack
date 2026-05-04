@@ -87,22 +87,43 @@ src/auth/
 
 ---
 
-## Fase 4: Módulos de Negocio (Pendiente)
+## Fase 4: Módulos de Negocio ✅
 
 ### Users Module
-- GET /users (listado con filtros)
-- POST /users (crear usuario - opcional)
-- GET /patients, GET /doctors
+- [x] GET /users (listado con filtros)
+- [x] GET /patients, GET /doctors
 
 ### Prescriptions Module
-- POST /prescriptions (crear prescripción con ítems)
-- GET /prescriptions (listado con paginación/filtros)
-- GET /prescriptions/:id
-- PUT /prescriptions/:id/consume (marcar consumida)
-- GET /prescriptions/:id/pdf (descargar PDF)
+- [x] POST /prescriptions (crear prescripción con ítems)
+- [x] GET /prescriptions (listado con paginación/filtros)
+- [x] GET /prescriptions/:id
+- [x] PUT /prescriptions/:id/consume (marcar consumida)
+- [x] GET /prescriptions/:id/pdf (descargar PDF)
 
 ### Admin Module
-- GET /admin/metrics (totales, por estado, por día, top doctors)
+- [x] GET /admin/metrics (totales, por estado, por día, top doctors)
+
+### Archivos creados
+```
+src/users/
+├── users.module.ts
+├── users.controller.ts
+└── users.service.ts
+
+src/prescriptions/
+├── prescriptions.module.ts
+├── prescriptions.controller.ts
+├── patient-prescriptions.controller.ts
+├── prescriptions.service.ts
+├── pdf.service.ts
+└── dto/
+    └── prescription.dto.ts
+
+src/admin/
+├── admin.module.ts
+├── admin.controller.ts
+└── admin.service.ts
+```
 
 ---
 
@@ -141,7 +162,7 @@ src/auth/
 ---
 
 ## Plus (Opcionales)
-- [ ] PDF con QR y firma del médico
+- [x] PDF con QR y firma del médico
 - [ ] Auditoría de cambios de estado
 - [ ] Notificaciones por email
 - [ ] Búsqueda avanzada
