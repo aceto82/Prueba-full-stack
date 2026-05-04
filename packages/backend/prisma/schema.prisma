@@ -79,3 +79,13 @@ model PrescriptionItem {
   quantity     Int?
   instructions String?
 }
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String
+  expiresAt DateTime
+
+  @@index([userId])
+  @@index([token])
+}
