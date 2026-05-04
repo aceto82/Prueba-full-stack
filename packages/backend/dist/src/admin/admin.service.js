@@ -26,7 +26,7 @@ let AdminService = class AdminService {
             if (to)
                 dateFilter.createdAt.lte = new Date(to);
         }
-        const [totalDoctors, totalPatients, totalPrescriptions, byStatus, byDay, topDoctors] = await Promise.all([
+        const [totalDoctors, totalPatients, totalPrescriptions, byStatus, byDayRaw, topDoctors] = await Promise.all([
             this.prisma.user.count({ where: { role: 'doctor' } }),
             this.prisma.user.count({ where: { role: 'patient' } }),
             this.prisma.prescription.count({ where: dateFilter }),
@@ -36,10 +36,10 @@ let AdminService = class AdminService {
                 where: dateFilter,
             }),
             this.prisma.$queryRaw `
-        SELECT DATE(created_at) as date, COUNT(*) as count
+        SELECT DATE("createdAt") as date, COUNT(*)::int as count
         FROM "Prescription"
-        WHERE created_at >= NOW() - INTERVAL '30 days'
-        GROUP BY DATE(created_at)
+        WHERE "createdAt" >= NOW() - INTERVAL '30 days'
+        GROUP BY DATE("createdAt")
         ORDER BY date DESC
       `,
             this.prisma.prescription.groupBy({
@@ -48,21 +48,29 @@ let AdminService = class AdminService {
                 where: dateFilter,
             }),
         ]);
+        const byDay = Array.isArray(byDayRaw) ? byDayRaw.map((row) => ({
+            date: row.date instanceof Date ? row.date.toISOString() : row.date,
+            count: Number(row.count),
+        })) : [];
         const byStatusMap = { pending: 0, consumed: 0 };
         byStatus.forEach((s) => {
             const key = s.status?.toLowerCase() || s.status;
             if (key === 'pending' || key === 'consumed') {
-                byStatusMap[key] = s._count;
+                byStatusMap[key] = Number(s._count);
             }
         });
         const topDoctorsWithNames = await Promise.all(topDoctors.map(async (t) => {
             const author = await this.prisma.doctor.findUnique({ where: { id: t.authorId }, include: { user: true } });
-            return { doctorId: t.authorId, doctorName: author?.user.name || 'Unknown', count: t._count };
+            return { doctorId: t.authorId, name: author?.user.name || 'Unknown', count: Number(t._count) };
         }));
         return {
-            totals: { doctors: totalDoctors, patients: totalPatients, prescriptions: totalPrescriptions },
+            totals: {
+                doctors: Number(totalDoctors),
+                patients: Number(totalPatients),
+                prescriptions: Number(totalPrescriptions)
+            },
             byStatus: byStatusMap,
-            byDay: byDay,
+            byDay,
             topDoctors: topDoctorsWithNames,
         };
     }

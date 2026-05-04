@@ -3,7 +3,7 @@ import { CreatePrescriptionDto } from './dto/prescription.dto';
 export declare class PrescriptionsService {
     private prisma;
     constructor(prisma: PrismaService);
-    createPrescription(doctorId: string, data: CreatePrescriptionDto): Promise<{
+    createPrescription(userId: string, data: CreatePrescriptionDto): Promise<{
         patient: {
             user: {
                 id: string;
@@ -54,7 +54,7 @@ export declare class PrescriptionsService {
         consumedAt: Date | null;
         authorId: string;
     }>;
-    findForDoctor(doctorId: string, filters: {
+    findForDoctor(userId: string, filters: {
         status?: string;
         from?: string;
         to?: string;

@@ -7,10 +7,10 @@
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:backend": "npm run dev -w @prescription/backend",
-    "dev:frontend": "npm run dev -w @prescription/frontend",
-    "build": "npm run build -w @prescription/backend && npm run build -w @prescription/frontend",
-    "test": "npm run test -w @prescription/backend"
+    "dev:backend": "npm run start:dev --workspace=packages/backend",
+    "dev:frontend": "npm run dev --workspace=packages/frontend",
+    "build": "npm run build --workspace=packages/backend && npm run build --workspace=packages/frontend",
+    "test": "npm run test --workspace=packages/backend"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

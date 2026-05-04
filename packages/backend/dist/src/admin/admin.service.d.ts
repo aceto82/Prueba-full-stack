@@ -12,11 +12,14 @@ export declare class AdminService {
             pending: number;
             consumed: number;
         };
-        byDay: unknown;
+        byDay: {
+            date: any;
+            count: number;
+        }[];
         topDoctors: {
             doctorId: any;
-            doctorName: string;
-            count: any;
+            name: string;
+            count: number;
         }[];
     }>;
 }

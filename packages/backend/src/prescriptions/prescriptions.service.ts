@@ -7,13 +7,29 @@ export class PrescriptionsService {
   constructor(private prisma: PrismaService) {}
 
   async createPrescription(
-    doctorId: string,
+    userId: string,
     data: CreatePrescriptionDto,
   ) {
-    const patient = await this.prisma.patient.findUnique({
-      where: { userId: data.patientId },
-      include: { user: true },
+    const doctor = await this.prisma.doctor.findUnique({
+      where: { userId },
     });
+
+    if (!doctor) {
+      throw new ForbiddenException('Solo doctores pueden crear prescripciones');
+    }
+
+    let patient;
+    patient = await this.prisma.patient.findUnique({ where: { id: data.patientId } });
+    if (!patient) {
+      patient = await this.prisma.patient.findUnique({ where: { userId: data.patientId } });
+    }
+
+    if (!patient) {
+      const user = await this.prisma.user.findUnique({ where: { id: data.patientId } });
+      if (user && user.role === 'patient') {
+        patient = await this.prisma.patient.findUnique({ where: { userId: user.id } });
+      }
+    }
 
     if (!patient) {
       throw new NotFoundException('Paciente no encontrado');
@@ -26,7 +42,7 @@ export class PrescriptionsService {
         code,
         notes: data.notes,
         patientId: patient.id,
-        authorId: doctorId,
+        authorId: doctor.id,
         items: {
           create: data.items.map(item => ({
             name: item.name,
@@ -42,11 +58,16 @@ export class PrescriptionsService {
     return prescription;
   }
 
-  async findForDoctor(doctorId: string, filters: { status?: string; from?: string; to?: string; page?: number; limit?: number }) {
+  async findForDoctor(userId: string, filters: { status?: string; from?: string; to?: string; page?: number; limit?: number }) {
+    const doctor = await this.prisma.doctor.findUnique({ where: { userId } });
+    if (!doctor) {
+      return { data: [], meta: { total: 0, page: 1, limit: 10, totalPages: 0 } };
+    }
+
     const skip = ((filters.page || 1) - 1) * (filters.limit || 10);
     const take = filters.limit || 10;
 
-    const where: any = { authorId: doctorId };
+    const where: any = { authorId: doctor.id };
     if (filters.status) {
       where.status = filters.status.toLowerCase();
     }
@@ -126,6 +147,11 @@ export class PrescriptionsService {
   }
 
   async consume(id: string, userId: string) {
+    const patient = await this.prisma.patient.findUnique({ where: { userId } });
+    if (!patient) {
+      throw new ForbiddenException('Solo pacientes pueden consumir prescripciones');
+    }
+
     const prescription = await this.prisma.prescription.findUnique({
       where: { id },
       include: { patient: { include: { user: true } } },
@@ -135,7 +161,7 @@ export class PrescriptionsService {
       throw new NotFoundException('Prescripción no encontrada');
     }
 
-    if (prescription.patient.userId !== userId) {
+    if (prescription.patientId !== patient.id) {
       throw new ForbiddenException('No puedes consumir esta prescripción');
     }
 
@@ -159,11 +185,14 @@ export class PrescriptionsService {
       throw new NotFoundException('Prescripción no encontrada');
     }
 
-    if (role === 'doctor' && prescription.author.userId !== userId) {
+    const doctor = await this.prisma.doctor.findUnique({ where: { userId } });
+    const patient = await this.prisma.patient.findUnique({ where: { userId } });
+
+    if (role === 'doctor' && doctor && prescription.authorId !== doctor.id) {
       throw new ForbiddenException('No puedes acceder a esta prescripción');
     }
 
-    if (role === 'patient' && prescription.patient.userId !== userId) {
+    if (role === 'patient' && patient && prescription.patientId !== patient.id) {
       throw new ForbiddenException('No puedes acceder a esta prescripción');
     }
 

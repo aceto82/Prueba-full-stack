@@ -127,22 +127,38 @@ src/admin/
 
 ---
 
-## Fase 5: Frontend (Pendiente)
+## Fase 5: Frontend ✅
 
 ### Páginas
-- `/login` - Autenticación
-- `/doctor/prescriptions` - Listado prescripciones
-- `/doctor/prescriptions/new` - Crear prescripción
-- `/doctor/prescriptions/[id]` - Detalle
-- `/patient/prescriptions` - Listado paciente
-- `/patient/prescriptions/[id]` - Detalle
-- `/admin` - Dashboard con métricas
+- [x] `/login` - Autenticación
+- [x] `/doctor/prescriptions` - Listado prescripciones
+- [x] `/doctor/prescriptions/new` - Crear prescripción
+- [x] `/doctor/prescriptions/[id]` - Detalle
+- [x] `/patient/prescriptions` - Listado paciente
+- [x] `/patient/prescriptions/[id]` - Detalle
+- [x] `/admin` - Dashboard con métricas
 
 ### Features
-- Protección de rutas por rol
-- Toasts para feedback
-- Estados: loading, error, empty
-- Responsive design
+- [x] Protección de rutas por rol
+- [x] Toasts para feedback
+- [x] Estados: loading, error, empty
+- [x] Responsive design
+
+### Archivos creados
+```
+src/
+├── lib/api.ts
+├── contexts/
+│   ├── AuthContext.tsx
+│   └── ToastContext.tsx
+├── components/
+│   └── SessionProvider.tsx
+└── app/
+    ├── login/
+    ├── doctor/prescriptions/
+    ├── patient/prescriptions/
+    └── admin/
+```
 
 ---
 
