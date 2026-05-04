@@ -9,7 +9,7 @@
 ## 2. Frontend Tests
 
 - [x] 2.1 Verificar test login existente corre (login.spec.tsx)
-- [ ] 2.2 Agregar test para componente de lista de prescripciones
+- [x] 2.2 Agregar test para componente de lista de prescripciones
 
 ## 3. Documentation
 

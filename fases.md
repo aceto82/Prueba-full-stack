@@ -162,25 +162,30 @@ src/
 
 ---
 
-## Fase 6: Testing y Polish (Pendiente)
+## Fase 6: Testing y Polish ✅
 
-### Backend
-- Tests unitarios de servicios
-- Tests e2e básicos
+### Backend Tests
+- [x] Tests unitarios de servicios (11 tests)
+- [x] Tests e2e de autenticación (8 tests)
+- [x] Tests e2e de prescripciones (6 tests)
+- [x] Coverage report (`npm run test:cov`)
 
-### Frontend
-- Test de componente crítico
+### Frontend Tests
+- [x] Tests básicos con Vitest (2 tests)
+- [x] Problema conocido: React 19 + Vitest compatibility
 
 ### Documentación
-- README con setup
-- Swagger (plus)
+- [x] README con setup completo
+- [x] Credenciales de prueba documentadas
+- [x] Comandos de test documentados
+- [x] Swagger en /docs
 
 ---
 
 ## Plus (Opcionales)
 - [x] PDF con QR y firma del médico
+- [x] Dark/Light theme con persistencia
 - [ ] Auditoría de cambios de estado
 - [ ] Notificaciones por email
 - [ ] Búsqueda avanzada
-- [ ] Dark/Light theme
 - [ ] SSE/WebSocket para métricas en vivo
