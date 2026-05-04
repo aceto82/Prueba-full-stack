@@ -144,6 +144,7 @@ export async function getPrescriptions(params?: {
   limit?: number;
 }) {
   const searchParams = new URLSearchParams();
+  const endpoint = params?.mine ? '/prescriptions' : '/me/prescriptions';
   if (params?.mine) searchParams.set('mine', 'true');
   if (params?.status) searchParams.set('status', params.status);
   if (params?.from) searchParams.set('from', params.from);
@@ -151,7 +152,7 @@ export async function getPrescriptions(params?: {
   if (params?.page) searchParams.set('page', String(params.page));
   if (params?.limit) searchParams.set('limit', String(params.limit));
   const query = searchParams.toString();
-  return apiRequest<{ data: Prescription[]; meta: { total: number; page: number; limit: number; totalPages: number } }>(`/prescriptions${query ? `?${query}` : ''}`);
+  return apiRequest<{ data: Prescription[]; meta: { total: number; page: number; limit: number; totalPages: number } }>(`${endpoint}${query ? `?${query}` : ''}`);
 }
 
 export async function getPrescription(id: string) {

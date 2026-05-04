@@ -33,7 +33,7 @@ export default function PatientPrescriptionsPage() {
 
   const fetchPrescriptions = async () => {
     try {
-      const response = await getPrescriptions({ mine: true }) as PrescriptionsResponse;
+      const response = await getPrescriptions({}) as PrescriptionsResponse;
       setPrescriptions(response.data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error cargando');
