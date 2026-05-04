@@ -52,18 +52,18 @@ model PrescriptionItem
 
 ---
 
-## Fase 3: Core Auth (Pendiente)
+## Fase 3: Core Auth ✅
 
-### Objetivos
-- [ ] Módulo de autenticación JWT + Refresh Tokens
-- [ ] Estrategia de login/logout
-- [ ] Guards de RBAC (@Roles decorator)
-- [ ] Endpoints: /auth/login, /auth/register, /auth/refresh, /auth/profile
-- [ ] DTOs con class-validator
-- [ ] Filtro de excepciones global
-- [ ] Configuración: Helmet, CORS, rate limit
+### Objetivos completados
+- [x] Módulo de autenticación JWT + Refresh Tokens
+- [x] Estrategia de login/logout
+- [x] Guards de RBAC (@Roles decorator)
+- [x] Endpoints: /auth/login, /auth/register, /auth/refresh, /auth/profile
+- [x] DTOs con class-validator
+- [x] Filtro de excepciones global
+- [x] Configuración: Helmet, CORS, rate limit
 
-### Archivos a crear
+### Archivos creados
 ```
 src/auth/
 ├── auth.module.ts
@@ -76,9 +76,13 @@ src/auth/
 │   ├── jwt.strategy.ts
 │   └── refresh.strategy.ts
 ├── guards/
+│   ├── jwt-auth.guard.ts
 │   └── roles.guard.ts
-└── decorators/
-    └── roles.decorator.ts
+├── decorators/
+│   ├── roles.decorator.ts
+│   └── current-user.decorator.ts
+└── filters/
+    └── http-exception.filter.ts
 ```
 
 ---
