@@ -18,15 +18,16 @@ enum PrescriptionStatus {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  name      String
-  role      Role
-  createdAt DateTime @default(now())
+  id               String   @id @default(cuid())
+  email            String   @unique
+  password         String
+  name             String
+  role             Role
+  createdAt        DateTime @default(now())
+  refreshTokenHash String?
 
-  doctorId  String?  @unique
-  patientId String?  @unique
+  doctorId  String? @unique
+  patientId String? @unique
   doctor    Doctor?
   patient   Patient?
 }
