@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Role } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { randomUUID } from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
@@ -55,7 +56,11 @@ export class AuthService {
     const user = await this.usersService.findById(userId);
     if (!user?.refreshTokenHash) throw new UnauthorizedException();
 
-    const matches = await bcrypt.compare(refreshToken, user.refreshTokenHash);
+    // Compare only the JWT signature (third segment) — bcrypt truncates at 72 bytes,
+    // which is shorter than a full JWT, so two tokens differing only in payload fields
+    // beyond byte 72 would compare as equal. The 43-char signature is always unique.
+    const sig = refreshToken.split('.')[2] ?? '';
+    const matches = await bcrypt.compare(sig, user.refreshTokenHash);
     if (!matches) throw new UnauthorizedException();
 
     const tokens = await this.generateTokens(userId, user.email, user.role);
@@ -74,7 +79,7 @@ export class AuthService {
         secret: this.config.getOrThrow<string>('JWT_ACCESS_SECRET'),
         expiresIn: 900, // 15 minutes
       }),
-      this.jwtService.signAsync(payload, {
+      this.jwtService.signAsync({ ...payload, jti: randomUUID() }, {
         secret: this.config.getOrThrow<string>('JWT_REFRESH_SECRET'),
         expiresIn: 604800, // 7 days
       }),
@@ -83,7 +88,8 @@ export class AuthService {
   }
 
   private async storeRefreshTokenHash(userId: string, token: string) {
-    const hash = await bcrypt.hash(token, 10);
+    const sig = token.split('.')[2] ?? token;
+    const hash = await bcrypt.hash(sig, 10);
     await this.usersService.updateRefreshTokenHash(userId, hash);
   }
 }

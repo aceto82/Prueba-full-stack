@@ -26,7 +26,8 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 
     if (!user?.refreshTokenHash) throw new UnauthorizedException();
 
-    const tokenMatches = await bcrypt.compare(refreshToken, user.refreshTokenHash);
+    const sig = refreshToken.split('.')[2] ?? '';
+    const tokenMatches = await bcrypt.compare(sig, user.refreshTokenHash);
     if (!tokenMatches) throw new UnauthorizedException();
 
     return { sub: payload.sub, email: payload.email, role: payload.role };
