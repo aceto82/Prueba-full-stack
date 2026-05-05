@@ -94,7 +94,7 @@ model PrescriptionItem
 - [x] `/doctor/prescriptions` — listado propio, filtro por estado, skeleton loading
 - [x] `/doctor/prescriptions/new` — formulario con ítems dinámicos add/remove
 - [x] `/doctor/prescriptions/[id]` — detalle de prescripción
-- [x] `/patient/prescriptions` — listado de prescripciones propias
+- [x] `/patient/prescriptions` — listado de prescripciones propias (con nombre del doctor)
 - [x] `/patient/prescriptions/[id]` — detalle, botón "Marcar consumida", botón "Descargar PDF"
 - [x] `/admin` — dashboard: tarjetas de totales, por estado, top 10 doctores, prescripciones por día, filtros por fecha
 
@@ -130,7 +130,7 @@ model PrescriptionItem
 
 ### Documentación
 - [x] `README.md` con setup local, variables de entorno, scripts, cuentas de prueba
-- [ ] Swagger / OpenAPI en `/docs` — **pendiente**
+- [x] Swagger / OpenAPI en `/docs` — todos los endpoints documentados con tags, operaciones, respuestas y Bearer auth
 
 ---
 
@@ -140,7 +140,7 @@ model PrescriptionItem
 |---------|--------|
 | PDF con QR apuntando a `/patient/prescriptions/:id` | ✅ Implementado |
 | Dark/Light theme con persistencia | ✅ Implementado |
-| Swagger en `/docs` | ⬜ Pendiente |
+| Swagger en `/docs` | ✅ Implementado |
 | Panel admin para crear usuarios | ⬜ Pendiente (seeds cubren el requisito mínimo) |
 | Auditoría de cambios de estado | ⬜ Pendiente |
 | Notificaciones por email | ⬜ Pendiente |
