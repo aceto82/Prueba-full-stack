@@ -19,7 +19,10 @@ interface PrescriptionDetail {
   items: Array<{ id: string; name: string; dosage: string | null; quantity: number | null; instructions: string | null }>;
 }
 
-const statusColors = { pending: 'bg-yellow-100 text-yellow-800', consumed: 'bg-green-100 text-green-800' };
+const statusColors = {
+  pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
+  consumed: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
+};
 const statusLabels = { pending: 'Pendiente', consumed: 'Consumida' };
 
 export default function DoctorPrescriptionDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -52,15 +55,15 @@ export default function DoctorPrescriptionDetailPage({ params }: { params: Promi
           )}
 
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 text-sm">{error}</div>
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-700 dark:text-red-400 text-sm">{error}</div>
           )}
 
           {prescription && (
             <div className="space-y-5">
               <div className="flex items-start justify-between">
                 <div>
-                  <h1 className="text-xl font-semibold text-gray-900">{prescription.code}</h1>
-                  <p className="text-sm text-gray-500 mt-0.5">
+                  <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{prescription.code}</h1>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
                     {new Date(prescription.createdAt).toLocaleDateString('es-ES', { dateStyle: 'long' })}
                   </p>
                 </div>
@@ -69,22 +72,22 @@ export default function DoctorPrescriptionDetailPage({ params }: { params: Promi
                 </span>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-2">
-                <h2 className="text-sm font-semibold text-gray-700 mb-2">Información</h2>
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-2">
+                <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Información</h2>
                 <Row label="Paciente" value={prescription.patient.user.name} />
                 <Row label="Email" value={prescription.patient.user.email} />
                 {prescription.notes && <Row label="Notas" value={prescription.notes} />}
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-lg p-4">
-                <h2 className="text-sm font-semibold text-gray-700 mb-3">Medicamentos</h2>
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Medicamentos</h2>
                 <div className="space-y-3">
                   {prescription.items.map((item) => (
-                    <div key={item.id} className="border-l-2 border-blue-200 pl-3">
-                      <p className="text-sm font-medium text-gray-900">{item.name}</p>
-                      {item.dosage && <p className="text-xs text-gray-500">Dosis: {item.dosage}</p>}
-                      {item.quantity != null && <p className="text-xs text-gray-500">Cantidad: {item.quantity}</p>}
-                      {item.instructions && <p className="text-xs text-gray-500">Instrucciones: {item.instructions}</p>}
+                    <div key={item.id} className="border-l-2 border-blue-200 dark:border-blue-700 pl-3">
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{item.name}</p>
+                      {item.dosage && <p className="text-xs text-gray-500 dark:text-gray-400">Dosis: {item.dosage}</p>}
+                      {item.quantity != null && <p className="text-xs text-gray-500 dark:text-gray-400">Cantidad: {item.quantity}</p>}
+                      {item.instructions && <p className="text-xs text-gray-500 dark:text-gray-400">Instrucciones: {item.instructions}</p>}
                     </div>
                   ))}
                 </div>
@@ -100,8 +103,8 @@ export default function DoctorPrescriptionDetailPage({ params }: { params: Promi
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex gap-2 text-sm">
-      <span className="text-gray-500 w-24 shrink-0">{label}</span>
-      <span className="text-gray-900">{value}</span>
+      <span className="text-gray-500 dark:text-gray-400 w-24 shrink-0">{label}</span>
+      <span className="text-gray-900 dark:text-gray-100">{value}</span>
     </div>
   );
 }

@@ -83,15 +83,15 @@ export default function NewPrescriptionPage() {
       <div className="min-h-screen flex flex-col">
         <Navbar />
         <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-6">
-          <h1 className="text-xl font-semibold text-gray-900 mb-6">Nueva Prescripción</h1>
+          <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">Nueva Prescripción</h1>
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Paciente</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Paciente</label>
               <select
                 required
                 value={patientId}
                 onChange={(e) => setPatientId(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Selecciona un paciente</option>
                 {patients.map((p) => (
@@ -103,21 +103,21 @@ export default function NewPrescriptionPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Notas (opcional)
               </label>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={2}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Indicaciones adicionales..."
               />
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium text-gray-700">Medicamentos</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Medicamentos</label>
                 <button
                   type="button"
                   onClick={addItem}
@@ -130,7 +130,7 @@ export default function NewPrescriptionPage() {
                 {items.map((item, idx) => (
                   <div
                     key={idx}
-                    className="bg-gray-50 border border-gray-200 rounded-lg p-3 space-y-2"
+                    className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 space-y-2"
                   >
                     <div className="flex gap-2">
                       <input
@@ -138,7 +138,7 @@ export default function NewPrescriptionPage() {
                         placeholder="Nombre del medicamento"
                         value={item.name}
                         onChange={(e) => updateItem(idx, 'name', e.target.value)}
-                        className="flex-1 border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="flex-1 border border-gray-300 dark:border-gray-600 rounded px-2 py-1.5 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
                       />
                       {items.length > 1 && (
                         <button
@@ -155,7 +155,7 @@ export default function NewPrescriptionPage() {
                         placeholder="Dosis"
                         value={item.dosage}
                         onChange={(e) => updateItem(idx, 'dosage', e.target.value)}
-                        className="border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="border border-gray-300 dark:border-gray-600 rounded px-2 py-1.5 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
                       />
                       <input
                         placeholder="Cantidad"
@@ -163,7 +163,7 @@ export default function NewPrescriptionPage() {
                         min="1"
                         value={item.quantity}
                         onChange={(e) => updateItem(idx, 'quantity', e.target.value)}
-                        className="border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="border border-gray-300 dark:border-gray-600 rounded px-2 py-1.5 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
                       />
                     </div>
                     <input
@@ -181,7 +181,7 @@ export default function NewPrescriptionPage() {
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="flex-1 border border-gray-300 text-gray-700 font-medium py-2 rounded-lg text-sm hover:bg-gray-50"
+                className="flex-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium py-2 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
                 Cancelar
               </button>
