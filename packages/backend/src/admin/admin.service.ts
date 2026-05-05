@@ -31,8 +31,8 @@ export class AdminService {
           where: prescriptionDateFilter,
           _count: { id: true },
         }),
-        this.prisma.$queryRaw<Array<{ date: Date; count: bigint }>>`
-          SELECT DATE("createdAt") as date, COUNT(*) as count
+        this.prisma.$queryRaw<Array<{ date: string; count: bigint }>>`
+          SELECT TO_CHAR(DATE("createdAt"), 'YYYY-MM-DD') as date, COUNT(*) as count
           FROM "Prescription"
           WHERE "createdAt" >= ${byDayFrom} AND "createdAt" <= ${byDayTo}
           GROUP BY DATE("createdAt")
@@ -53,7 +53,7 @@ export class AdminService {
     }
 
     const byDay = byDayRaw.map((row) => ({
-      date: String(row.date).substring(0, 10),
+      date: row.date,
       count: Number(row.count),
     }));
 

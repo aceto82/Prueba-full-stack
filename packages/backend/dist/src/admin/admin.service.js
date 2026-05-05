@@ -40,7 +40,7 @@ let AdminService = class AdminService {
                 _count: { id: true },
             }),
             this.prisma.$queryRaw `
-          SELECT DATE("createdAt") as date, COUNT(*) as count
+          SELECT TO_CHAR(DATE("createdAt"), 'YYYY-MM-DD') as date, COUNT(*) as count
           FROM "Prescription"
           WHERE "createdAt" >= ${byDayFrom} AND "createdAt" <= ${byDayTo}
           GROUP BY DATE("createdAt")
@@ -59,7 +59,7 @@ let AdminService = class AdminService {
             byStatus[row.status] = row._count.id;
         }
         const byDay = byDayRaw.map((row) => ({
-            date: String(row.date).substring(0, 10),
+            date: row.date,
             count: Number(row.count),
         }));
         const doctorIds = topDoctorsGroupBy.map((r) => r.authorId);
