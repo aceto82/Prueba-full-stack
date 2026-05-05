@@ -13,7 +13,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
+const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 const throttler_1 = require("@nestjs/throttler");
 const auth_service_1 = require("./auth.service");
 const current_user_decorator_1 = require("./decorators/current-user.decorator");
@@ -50,6 +52,9 @@ __decorate([
     (0, throttler_1.Throttle)({ default: { limit: 10, ttl: 60000 } }),
     (0, common_1.UseGuards)(local_auth_guard_1.LocalAuthGuard),
     (0, common_1.Post)('login'),
+    (0, swagger_1.ApiOperation)({ summary: 'Iniciar sesión', description: 'Retorna accessToken y refreshToken' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Login exitoso — devuelve { accessToken, refreshToken, user }' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Credenciales inválidas' }),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -60,6 +65,9 @@ __decorate([
     (0, public_decorator_1.Public)(),
     (0, throttler_1.Throttle)({ default: { limit: 10, ttl: 60000 } }),
     (0, common_1.Post)('register'),
+    (0, swagger_1.ApiOperation)({ summary: 'Registrar usuario', description: 'Crea un usuario con rol doctor o patient' }),
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Usuario creado — devuelve { accessToken, refreshToken, user }' }),
+    (0, swagger_1.ApiResponse)({ status: 409, description: 'El email ya está registrado' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [register_dto_1.RegisterDto]),
@@ -69,6 +77,9 @@ __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.UseGuards)(jwt_refresh_guard_1.JwtRefreshGuard),
     (0, common_1.Post)('refresh'),
+    (0, swagger_1.ApiOperation)({ summary: 'Renovar tokens', description: 'Recibe el refreshToken en el body y devuelve un nuevo par de tokens' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Tokens renovados' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Refresh token inválido o expirado' }),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -77,6 +88,10 @@ __decorate([
 ], AuthController.prototype, "refresh", null);
 __decorate([
     (0, common_1.Get)('profile'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Perfil del usuario autenticado' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Payload del JWT con sub, email y role' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Token no proporcionado o inválido' }),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -84,12 +99,17 @@ __decorate([
 ], AuthController.prototype, "profile", null);
 __decorate([
     (0, common_1.Post)('logout'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Cerrar sesión', description: 'Invalida el refresh token almacenado' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Sesión cerrada' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Token no proporcionado o inválido' }),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "logout", null);
 exports.AuthController = AuthController = __decorate([
+    (0, swagger_1.ApiTags)('auth'),
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], AuthController);

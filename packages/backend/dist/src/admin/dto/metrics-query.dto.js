@@ -10,18 +10,25 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MetricsQueryDto = void 0;
+const openapi = require("@nestjs/swagger");
+const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class MetricsQueryDto {
     from;
     to;
+    static _OPENAPI_METADATA_FACTORY() {
+        return { from: { required: false, type: () => String }, to: { required: false, type: () => String } };
+    }
 }
 exports.MetricsQueryDto = MetricsQueryDto;
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: '2026-01-01', description: 'Inicio del período (ISO 8601)' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsDateString)(),
     __metadata("design:type", String)
 ], MetricsQueryDto.prototype, "from", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: '2026-12-31', description: 'Fin del período (ISO 8601)' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsDateString)(),
     __metadata("design:type", String)

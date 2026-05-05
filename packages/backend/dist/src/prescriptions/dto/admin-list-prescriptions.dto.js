@@ -10,19 +10,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminListPrescriptionsDto = void 0;
+const openapi = require("@nestjs/swagger");
+const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 const list_prescriptions_dto_1 = require("./list-prescriptions.dto");
 class AdminListPrescriptionsDto extends list_prescriptions_dto_1.ListPrescriptionsDto {
     doctorId;
     patientId;
+    static _OPENAPI_METADATA_FACTORY() {
+        return { doctorId: { required: false, type: () => String }, patientId: { required: false, type: () => String } };
+    }
 }
 exports.AdminListPrescriptionsDto = AdminListPrescriptionsDto;
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Filtrar por ID de doctor' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], AdminListPrescriptionsDto.prototype, "doctorId", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Filtrar por ID de paciente' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

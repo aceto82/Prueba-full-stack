@@ -10,6 +10,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreatePrescriptionDto = void 0;
+const openapi = require("@nestjs/swagger");
+const swagger_1 = require("@nestjs/swagger");
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 class PrescriptionItemDto {
@@ -17,17 +19,23 @@ class PrescriptionItemDto {
     dosage;
     quantity;
     instructions;
+    static _OPENAPI_METADATA_FACTORY() {
+        return { name: { required: true, type: () => String }, dosage: { required: false, type: () => String }, quantity: { required: false, type: () => Number, minimum: 1 }, instructions: { required: false, type: () => String } };
+    }
 }
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'Amoxicilina 500mg' }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], PrescriptionItemDto.prototype, "name", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: '1 cápsula cada 8h' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], PrescriptionItemDto.prototype, "dosage", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 15, minimum: 1 }),
     (0, class_validator_1.IsOptional)(),
     (0, class_transformer_1.Type)(() => Number),
     (0, class_validator_1.IsInt)(),
@@ -35,6 +43,7 @@ __decorate([
     __metadata("design:type", Number)
 ], PrescriptionItemDto.prototype, "quantity", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 'Tomar después de comer' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
@@ -43,18 +52,24 @@ class CreatePrescriptionDto {
     patientId;
     notes;
     items;
+    static _OPENAPI_METADATA_FACTORY() {
+        return { patientId: { required: true, type: () => String }, notes: { required: false, type: () => String }, items: { required: true, type: () => [PrescriptionItemDto], minItems: 1 } };
+    }
 }
 exports.CreatePrescriptionDto = CreatePrescriptionDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'cmos1zetk0000gnlx8ip9462c', description: 'ID del paciente' }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreatePrescriptionDto.prototype, "patientId", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 'Revisión post-operatoria' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreatePrescriptionDto.prototype, "notes", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ type: [PrescriptionItemDto], minItems: 1 }),
     (0, class_validator_1.IsArray)(),
     (0, class_validator_1.ArrayMinSize)(1),
     (0, class_validator_1.ValidateNested)({ each: true }),

@@ -10,12 +10,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersQueryDto = void 0;
+const openapi = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 const client_1 = require("@prisma/client");
 const pagination_dto_1 = require("../../common/dto/pagination.dto");
 class UsersQueryDto extends pagination_dto_1.PaginationDto {
     role;
     query;
+    static _OPENAPI_METADATA_FACTORY() {
+        return { role: { required: false, type: () => Object }, query: { required: false, type: () => String } };
+    }
 }
 exports.UsersQueryDto = UsersQueryDto;
 __decorate([
