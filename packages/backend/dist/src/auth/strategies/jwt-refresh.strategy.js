@@ -67,7 +67,8 @@ let JwtRefreshStrategy = class JwtRefreshStrategy extends (0, passport_1.Passpor
         const user = await this.usersService.findById(payload.sub);
         if (!user?.refreshTokenHash)
             throw new common_1.UnauthorizedException();
-        const tokenMatches = await bcrypt.compare(refreshToken, user.refreshTokenHash);
+        const sig = refreshToken.split('.')[2] ?? '';
+        const tokenMatches = await bcrypt.compare(sig, user.refreshTokenHash);
         if (!tokenMatches)
             throw new common_1.UnauthorizedException();
         return { sub: payload.sub, email: payload.email, role: payload.role };

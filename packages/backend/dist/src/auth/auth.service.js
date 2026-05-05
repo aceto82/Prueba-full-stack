@@ -47,6 +47,7 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const jwt_1 = require("@nestjs/jwt");
 const bcrypt = __importStar(require("bcrypt"));
+const crypto_1 = require("crypto");
 const prisma_service_1 = require("../prisma/prisma.service");
 const users_service_1 = require("../users/users.service");
 let AuthService = class AuthService {
@@ -97,7 +98,8 @@ let AuthService = class AuthService {
         const user = await this.usersService.findById(userId);
         if (!user?.refreshTokenHash)
             throw new common_1.UnauthorizedException();
-        const matches = await bcrypt.compare(refreshToken, user.refreshTokenHash);
+        const sig = refreshToken.split('.')[2] ?? '';
+        const matches = await bcrypt.compare(sig, user.refreshTokenHash);
         if (!matches)
             throw new common_1.UnauthorizedException();
         const tokens = await this.generateTokens(userId, user.email, user.role);
@@ -114,7 +116,7 @@ let AuthService = class AuthService {
                 secret: this.config.getOrThrow('JWT_ACCESS_SECRET'),
                 expiresIn: 900,
             }),
-            this.jwtService.signAsync(payload, {
+            this.jwtService.signAsync({ ...payload, jti: (0, crypto_1.randomUUID)() }, {
                 secret: this.config.getOrThrow('JWT_REFRESH_SECRET'),
                 expiresIn: 604800,
             }),
@@ -122,7 +124,8 @@ let AuthService = class AuthService {
         return { accessToken, refreshToken };
     }
     async storeRefreshTokenHash(userId, token) {
-        const hash = await bcrypt.hash(token, 10);
+        const sig = token.split('.')[2] ?? token;
+        const hash = await bcrypt.hash(sig, 10);
         await this.usersService.updateRefreshTokenHash(userId, hash);
     }
 };
