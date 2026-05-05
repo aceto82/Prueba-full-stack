@@ -16,14 +16,14 @@ A full-stack prescription management system for doctors, patients, and administr
 DATABASE_URL=postgresql://user:password@localhost:5432/prescriptions
 JWT_ACCESS_SECRET=change-me-access
 JWT_REFRESH_SECRET=change-me-refresh
-APP_PORT=3000
-APP_ORIGIN=http://localhost:3001
+APP_PORT=3001
+APP_ORIGIN=http://localhost:3000
 ```
 
 ### `packages/frontend/.env.local`
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:3000
+NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
 
 ## Database Setup
@@ -53,7 +53,7 @@ All commands run from the **repository root** unless noted.
 
 | Command | Description |
 |---|---|
-| `npm run dev` | Start backend (port 3000) and frontend (port 3001) concurrently |
+| `npm run dev` | Start backend (port 3001) and frontend (port 3000) concurrently |
 | `npm run dev:backend` | Backend only in watch mode |
 | `npm run dev:frontend` | Frontend only |
 | `npm run build` | Build backend then frontend |
