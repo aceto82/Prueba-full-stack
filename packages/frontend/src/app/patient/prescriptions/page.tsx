@@ -28,8 +28,8 @@ export default function PatientPrescriptionsPage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    apiFetch<Prescription[]>('/me/prescriptions')
-      .then(setPrescriptions)
+    apiFetch<{ data: Prescription[] }>('/me/prescriptions')
+      .then((res) => setPrescriptions(res.data))
       .catch(() => setError('Error al cargar prescripciones'))
       .finally(() => setLoading(false));
   }, []);

@@ -109,7 +109,7 @@ export class PrescriptionsService {
         skip: (page - 1) * limit,
         take: limit,
         orderBy: { createdAt: order },
-        include: { items: true },
+        include: { items: true, author: { include: { user: { select: { name: true } } } } },
       }),
       this.prisma.prescription.count({ where }),
     ]);

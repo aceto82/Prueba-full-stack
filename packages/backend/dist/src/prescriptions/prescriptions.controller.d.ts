@@ -127,6 +127,15 @@ export declare class PrescriptionsController {
     }>;
     findMyPrescriptions(user: JwtUser, query: ListPrescriptionsDto): Promise<{
         data: ({
+            author: {
+                user: {
+                    name: string;
+                };
+            } & {
+                id: string;
+                specialty: string | null;
+                userId: string;
+            };
             items: {
                 id: string;
                 name: string;

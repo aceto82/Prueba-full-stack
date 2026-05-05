@@ -125,6 +125,15 @@ export declare class PrescriptionsService {
     }>;
     findAllForPatient(patientUserId: string, filters: ListPrescriptionsDto): Promise<{
         data: ({
+            author: {
+                user: {
+                    name: string;
+                };
+            } & {
+                id: string;
+                specialty: string | null;
+                userId: string;
+            };
             items: {
                 id: string;
                 name: string;
