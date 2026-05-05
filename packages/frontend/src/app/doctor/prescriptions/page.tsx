@@ -1,10 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { AuthGuard } from '../../../components/AuthGuard';
 import { Navbar } from '../../../components/Navbar';
 import { SkeletonList } from '../../../components/Skeleton';
+import { useFilterParams } from '../../../hooks/useFilterParams';
 import { apiFetch } from '../../../lib/api';
 
 interface Prescription {
@@ -27,22 +28,22 @@ const statusColors = {
 
 const statusLabels = { pending: 'Pendiente', consumed: 'Consumida' };
 
-export default function DoctorPrescriptionsPage() {
+function DoctorPrescriptionsContent() {
+  const { filters, setFilters } = useFilterParams(['status']);
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
 
   useEffect(() => {
     const params = new URLSearchParams({ limit: '50' });
-    if (statusFilter) params.set('status', statusFilter);
+    if (filters.status) params.set('status', filters.status);
 
     setLoading(true);
     apiFetch<PaginatedResponse>(`/prescriptions?${params}`)
       .then((res) => setPrescriptions(res.data))
       .catch(() => setError('Error al cargar prescripciones'))
       .finally(() => setLoading(false));
-  }, [statusFilter]);
+  }, [filters.status]);
 
   return (
     <AuthGuard role="doctor">
@@ -63,9 +64,9 @@ export default function DoctorPrescriptionsPage() {
             {['', 'pending', 'consumed'].map((s) => (
               <button
                 key={s}
-                onClick={() => setStatusFilter(s)}
+                onClick={() => setFilters({ status: s })}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                  statusFilter === s
+                  filters.status === s
                     ? 'bg-blue-600 text-white'
                     : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600'
                 }`}
@@ -119,5 +120,13 @@ export default function DoctorPrescriptionsPage() {
         </main>
       </div>
     </AuthGuard>
+  );
+}
+
+export default function DoctorPrescriptionsPage() {
+  return (
+    <Suspense>
+      <DoctorPrescriptionsContent />
+    </Suspense>
   );
 }

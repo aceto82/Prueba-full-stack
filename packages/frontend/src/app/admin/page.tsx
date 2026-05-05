@@ -1,9 +1,10 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { AuthGuard } from '../../components/AuthGuard';
 import { Navbar } from '../../components/Navbar';
 import { Skeleton } from '../../components/Skeleton';
+import { useFilterParams } from '../../hooks/useFilterParams';
 import { apiFetch } from '../../lib/api';
 
 interface Metrics {
@@ -26,14 +27,13 @@ function MetricCard({ label, value, loading }: { label: string; value: number; l
   );
 }
 
-export default function AdminPage() {
+function AdminPageContent() {
+  const { filters, setFilters } = useFilterParams(['from', 'to']);
   const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
-  const [fromInput, setFromInput] = useState('');
-  const [toInput, setToInput] = useState('');
+  const [fromInput, setFromInput] = useState(filters.from);
+  const [toInput, setToInput] = useState(filters.to);
 
   const fetchMetrics = useCallback(
     (f: string, t: string) => {
@@ -52,13 +52,12 @@ export default function AdminPage() {
   );
 
   useEffect(() => {
-    fetchMetrics(from, to);
-  }, [fetchMetrics, from, to]);
+    fetchMetrics(filters.from, filters.to);
+  }, [fetchMetrics, filters.from, filters.to]);
 
   function handleFilterSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setFrom(fromInput);
-    setTo(toInput);
+    setFilters({ from: fromInput, to: toInput });
   }
 
   return (
@@ -101,8 +100,7 @@ export default function AdminPage() {
                 onClick={() => {
                   setFromInput('');
                   setToInput('');
-                  setFrom('');
-                  setTo('');
+                  setFilters({});
                 }}
                 className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
               >
@@ -115,7 +113,7 @@ export default function AdminPage() {
             <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center justify-between">
               <p className="text-red-700 text-sm">{error}</p>
               <button
-                onClick={() => fetchMetrics(from, to)}
+                onClick={() => fetchMetrics(filters.from, filters.to)}
                 className="text-sm text-red-600 font-medium hover:underline ml-4"
               >
                 Reintentar
@@ -242,5 +240,13 @@ export default function AdminPage() {
         </main>
       </div>
     </AuthGuard>
+  );
+}
+
+export default function AdminPage() {
+  return (
+    <Suspense>
+      <AdminPageContent />
+    </Suspense>
   );
 }

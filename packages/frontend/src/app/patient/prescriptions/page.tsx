@@ -1,10 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { AuthGuard } from '../../../components/AuthGuard';
 import { Navbar } from '../../../components/Navbar';
 import { SkeletonList } from '../../../components/Skeleton';
+import { useFilterParams } from '../../../hooks/useFilterParams';
 import { apiFetch } from '../../../lib/api';
 
 interface Prescription {
@@ -22,17 +23,22 @@ const statusColors = {
 
 const statusLabels = { pending: 'Pendiente', consumed: 'Consumida' };
 
-export default function PatientPrescriptionsPage() {
+function PatientPrescriptionsContent() {
+  const { filters, setFilters } = useFilterParams(['status']);
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    apiFetch<{ data: Prescription[] }>('/me/prescriptions')
+    const params = new URLSearchParams({ limit: '50' });
+    if (filters.status) params.set('status', filters.status);
+
+    setLoading(true);
+    apiFetch<{ data: Prescription[] }>(`/me/prescriptions?${params}`)
       .then((res) => setPrescriptions(res.data))
       .catch(() => setError('Error al cargar prescripciones'))
       .finally(() => setLoading(false));
-  }, []);
+  }, [filters.status]);
 
   return (
     <AuthGuard role="patient">
@@ -40,6 +46,22 @@ export default function PatientPrescriptionsPage() {
         <Navbar />
         <main className="flex-1 max-w-4xl mx-auto w-full px-4 py-6">
           <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">Mis Prescripciones</h1>
+
+          <div className="flex gap-2 mb-4">
+            {(['', 'pending', 'consumed'] as const).map((s) => (
+              <button
+                key={s}
+                onClick={() => setFilters({ status: s })}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  filters.status === s
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600'
+                }`}
+              >
+                {s === '' ? 'Todas' : statusLabels[s]}
+              </button>
+            ))}
+          </div>
 
           {loading && <SkeletonList />}
 
@@ -84,5 +106,13 @@ export default function PatientPrescriptionsPage() {
         </main>
       </div>
     </AuthGuard>
+  );
+}
+
+export default function PatientPrescriptionsPage() {
+  return (
+    <Suspense>
+      <PatientPrescriptionsContent />
+    </Suspense>
   );
 }
